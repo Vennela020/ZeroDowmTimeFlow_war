@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jewelry Favorites with Animation</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #fff8f0;
+      padding: 0;
+      margin: 0;
+    }
+    .navbar {
+      background: linear-gradient(90deg, #d4af37, #fff8f0);
+      padding: 1em 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .navbar ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: inline-flex;
+      gap: 2em;
+    }
+    .navbar a {
+      text-decoration: none;
+      color: #333;
+      font-weight: bold;
+      font-size: 1.1em;
+      padding: 0.5em 1em;
+      border-radius: 20px;
+      transition: background 0.3s, color 0.3s;
+    }
+    .navbar a:hover {
+      background: #d4af37;
+      color: #fff;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .item {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      background-color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .item img {
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #d4af37;
+      box-shadow: 0 2px 8px rgba(212,175,55,0.1);
+    }
+    .item-content {
+      flex: 1;
+    }
+    .item h3 {
+      margin: 0;
+    }
+    .favorite-btn {
+      background-color: #d4af37;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: transform 0.2s ease;
+    }
+    .favorite-btn:hover {
+      transform: scale(1.05);
+    }
+    .favorite-count {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    /* Animation styles */
+    .sparkle {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 24px;
+      animation: sparkleFade 1s ease-out forwards;
+    }
+    @keyframes sparkleFade {
+      0% { opacity: 1; transform: scale(1);}
+      100% { opacity: 0; transform: scale(2);}
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <ul>
+      <li><a href="#" id="nav-necklace">Necklace</a></li>
+      <li><a href="#" id="nav-earrings">Earrings</a></li>
+    </ul>
+  </nav>
+  <div class="container" id="items-container">
+    <!-- Jewelry items will be injected here -->
+  </div>
+  <script>
+    const jewelryData = {
+      necklace: [
+        {
+          name: "Classic Gold Necklace",
+          img: "https://www.pngmart.com/files/22/Necklace-PNG-HD.png"
+        },
+        {
+          name: "Pearl Necklace",
+          img:"https://png.pngtree.com/png-clipart/20200225/original/pngtree-sapphire-pearl-necklace-png-image_5308387.jpg"
+        },
+        {
+          name: "Diamond Pendant Necklace",
+          img: "https://i.pinimg.com/originals/6b/7e/b7/6b7eb76af2025b882f4edafcc2e4370f.png"
+        },
+        {
+          name: "Layered Chain Necklace",
+          img: "https://i.pinimg.com/originals/16/6c/2b/166c2b30b5dedf34fa08fe8398a639b0.jpg"
+        }
+      ],
+      earrings: [
+        {
+          name: "Diamond Stud Earrings",
+          img: "https://tse2.mm.bing.net/th/id/OIP.gkLEAfKrKu8LF2kz--WlOAHaHK?pid=Api&P=0&h=180"
+        },
+        {
+          name: "Gold Hoop Earrings",
+          img: "https://static.vecteezy.com/system/resources/previews/048/897/106/non_2x/gold-hoop-earrings-with-diamond-detail-free-png.png"
+        },
+        {
+          name: "Pearl Drop Earrings",
+          img: "https://www.therealpearlco.com/wp-content/uploads/2022/11/7DCCB244-1A8C-4905-B628-F8268D10A96D-scaled.jpeg"
+        },
+        {
+          name: "Emerald Stud Earrings",
+          img: "https://i.pinimg.com/originals/82/a0/0c/82a00c2e8c168159198bace719dc499c.png"
+        }
+      ]
+    };
+
+    const favorites = {};
+
+    function renderItems(type) {
+      const container = document.getElementById('items-container');
+      container.innerHTML = '';
+      jewelryData[type].forEach((item, idx) => {
+        const itemId = `${type}-${idx}`;
+        favorites[itemId] = favorites[itemId] || 0;
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.id = itemId + '-item';
+        div.innerHTML = `
+          <img src="${item.img}" alt="${item.name}">
+          <div class="item-content">
+            <h3>${item.name}</h3>
+            <button class="favorite-btn" onclick="addFavorite('${itemId}')">Add to Favorites</button>
+            <div class="favorite-count" id="${itemId}-count">Favorites: ${favorites[itemId]}</div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function addFavorite(itemId) {
+      favorites[itemId]++;
+      document.getElementById(`${itemId}-count`).textContent = `Favorites: ${favorites[itemId]}`;
+      // Sparkle animation
+      const sparkle = document.createElement('div');
+      sparkle.className = 'sparkle';
+      sparkle.textContent = '✨';
+      document.getElementById(`${itemId}-item`).appendChild(sparkle);
+      setTimeout(() => {
+        sparkle.remove();
+      }, 1000);
+    }
+
+    // Navbar click handlers
+    document.getElementById('nav-necklace').onclick = function(e) {
+      e.preventDefault();
+      renderItems('necklace');
+    };
+    document.getElementById('nav-earrings').onclick = function(e) {
+      e.preventDefault();
+      renderItems('earrings');
+    };
+
+    // Initial load: show necklaces
+    renderItems('necklace');
+
+    // Make addFavorite globally accessible
+    window.addFavorite = addFavorite;
+  </script>
+</body>
+</html>
